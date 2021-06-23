@@ -1,0 +1,48 @@
+49 1000 39 10000
+1
+alpha_data.dat
+result.dat
+
+
+READ(10,*)N,NAS,tf
+READ(10,*)flag_T,flag_alpha
+READ(10,*)data_alpha
+READ(10,*)result
+
+
+!=========================Description of input variables=========================#
+# First line: (N,NAS,tf)                                                         #
+!================================================================================#
+#N   (IN)      : Size of the network                                             #
+#NAS (IN)      : Number of elemnts of set alpha(t)                               #
+#tf  (IN)      : Time steps required for MSD calculation.                        #
+#                                                                                #
+!================================================================================#
+# Second line: (flag_T,flag_alpha)                                               #
+!================================================================================#
+#flag_T     (IN)  :Parameter that allows to chosse between the normal tori (NT)  #
+#                  or the helicoidal tori (HT). If flag_T>0, then the MSD        #
+#                  Calculation will be performed by considering the NT and       #
+#                  otherwise a TH.                                               #
+#flag_alpha (IN)  :If flag_alpha>0 the algorithm takes the parameter alpha       #
+#                  as a constant and its value is flag_alpha.                    #
+#                  On the other hand,if flag_alpha <0 the alpha data is to       #
+#                  read from a file. Note that the number of alpha data in this  #
+#                  file must correspond with the value of the NAS variable.      #
+#                                                                                #
+!================================================================================#
+# Third line: (data_alpha)                                                       #
+!================================================================================#
+#data_alpha    (IN) :Name of the file that contains the set of values alpha.     #
+!================================================================================#
+# Fourth line: (result)                                                          #
+!================================================================================#
+# result       (OUT) :Name of the file that containsthe results of the MSD       #
+#                     and their numerical derivative.                            #
+!================================================================================#
+# Autor    : Alfredo Blanco Serrano <alfredoblancoserrano@gmail.com>             #
+#            Alfonso Allen-Perkins <alfonso.allen.perkins@gmail.com>             #
+#            Roberto F. S. Andrade <randrade@ufba.br>                            #
+# Version  : Beta 1.0                                                            #
+# Date     : agosto 03, 2020                                                     #
+!================================================================================#
