@@ -50,7 +50,7 @@ SUBROUTINE initialization
   ALLOCATE(deri(tf,2), STAT=ALLOCATESTATUS)
   IF(ALLOCATESTATUS .NE. 0)STOP "***NOT ENOUGH MEMORY ***"
   deri=0.d0;alp=0.d0
-!========================Initialization of required variables=====================
+!========================Reading alpha data=======================================
   IF(flag_alpha .LT. 0)THEN
       OPEN(UNIT=10,FILE=data_alpha,STATUS='unknown')
       READ(10,*)
