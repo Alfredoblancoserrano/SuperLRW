@@ -7,29 +7,45 @@
 !              Roberto F. S. Andrade <randrade@ufba.br>
 !================================================================================
 !About this module: This module contains all the necessary subroutines
-!                   for the computation of the mean square distance as
+!                   for the computation of the mean square distance (MSD) as
 !                   described in the Main_GAM.
+!
+! Initialization    : This code allows the assignment of values to variables that
+!                     do not depend on main loop.
+! ST                : The stochastic transition matrix is constructed. For more
+!                     details see Equation (5) of the manuscript.
+! MELLI             : Mellin transformed d-path adjacency matrix(TM).
+! Num_Deri          : Calculation of the numerical derivative.
+! TH                : Calculation of the neighborhood matrix and the diameter for
+!                     a TH of size N.
+! Heaviside         : Heaviside step function, or the unit step function.
+! TN                : Calculation of the neighborhood matrix and the diameter for
+!                     a TN of size.
+! Line_TN & dis_TN  : These codes are used by the TN algorithm to estimate the
+!                     neighborhood matrix.
+! Data_Reading      : Subroutine that reads the initial data from the
+! write_data        : Writing the results obtained.
 !================================================================================
 MODULE module_GAM
 !==========================universal variables====================================
 INTEGER,PARAMETER :: sp=4,dp=8
-INTEGER(sp) :: N,NAS,tf,dmax
+INTEGER(sp) :: N,Nas,tf,dmax
 REAL(dp) :: flag_alpha
-INTEGER(sp),DIMENSION(:,:),ALLOCATABLE :: ADJA
+INTEGER(sp),DIMENSION(:,:),ALLOCATABLE :: Adja
 REAL(dp),DIMENSION(:,:),ALLOCATABLE :: TM
 REAL(dp),DIMENSION(:,:),ALLOCATABLE :: S
 REAL(dp),DIMENSION(:,:),ALLOCATABLE :: PTR
 REAL(dp),DIMENSION(:,:),ALLOCATABLE :: MSDT
-REAL(dp),DIMENSION(:,:),ALLOCATABLE :: deri
+REAL(dp),DIMENSION(:,:),ALLOCATABLE :: Deri
 INTEGER(sp),DIMENSION(:,:),ALLOCATABLE :: MC
-REAL(dp),DIMENSION(:),ALLOCATABLE :: alp
+REAL(dp),DIMENSION(:),ALLOCATABLE :: Alp
 INTEGER(sp) :: ALLOCATESTATUS,flag_T
 CHARACTER(30) :: data_alpha,input,result
 
 !================================================================================
 CONTAINS
 !================================================================================
-SUBROUTINE initialization
+SUBROUTINE Initialization
   IMPLICIT NONE
   INTEGER(sp) :: i
 !========================Initialization of required variables=====================
@@ -53,9 +69,10 @@ SUBROUTINE initialization
 !========================Reading alpha data=======================================
   IF(flag_alpha .LT. 0)THEN
       OPEN(UNIT=10,FILE=data_alpha,STATUS='unknown')
-      READ(10,*)
-      READ(10,*)
-      DO i=1,NAS
+      DO i=1,6
+        READ(10,*)
+      END DO
+      DO i=1,Nas
         READ(10,*)alp(i)
       END DO
       CLOSE(10)
@@ -79,7 +96,7 @@ SUBROUTINE initialization
   RETURN
   END SUBROUTINE initialization
 !================================================================================
-SUBROUTINE S_GRADE(TM,S)
+SUBROUTINE ST(TM,S)
 !======================= stochastic transition matrix============================
   IMPLICIT NONE
   REAL(dp), DIMENSION(:,:), INTENT(IN) :: TM
@@ -107,15 +124,15 @@ SUBROUTINE S_GRADE(TM,S)
   DEALLOCATE(B, STAT=ALLOCATESTATUS)
   IF(ALLOCATESTATUS .NE. 0 )STOP "*** NOT ENOUGH MEMORY ***"
   RETURN
-END SUBROUTINE S_GRADE
+END SUBROUTINE ST
 !================================================================================
 !================================================================================
-SUBROUTINE MELLI(A,MC,dmax,ALPHA,t,TM)
+SUBROUTINE MELLI(A,MC,dmax,Alpha,t,TM)
 !================Mellin transformed d−path adjacency matrix======================
   IMPLICIT NONE
   INTEGER(sp), DIMENSION(:,:), INTENT(IN) :: A
   INTEGER(sp), DIMENSION(:,:), INTENT(IN) :: MC
-  REAL(dp), DIMENSION(:), INTENT(IN) :: ALPHA
+  REAL(dp), DIMENSION(:), INTENT(IN) :: Alpha
   INTEGER(sp), INTENT(IN) :: dmax,t
   REAL(dp), DIMENSION(:,:), INTENT(OUT) :: TM
 
@@ -138,7 +155,7 @@ SUBROUTINE MELLI(A,MC,dmax,ALPHA,t,TM)
         IF(Amostra .EQ. i )DUMMY(j,k)=1.d0
       END DO
     END DO
-    d=1.d0/REAL(i)**(alpha(t-1))
+    d=1.d0/REAL(i)**(Alpha(t))
 
     B(1:n,1:n)=B(1:n,1:n)+d*DUMMY(1:n,1:n)
   END DO
@@ -151,7 +168,7 @@ SUBROUTINE MELLI(A,MC,dmax,ALPHA,t,TM)
   RETURN
 END SUBROUTINE MELLI
 !=================================================================================
-SUBROUTINE Num_DERI(A,B)
+SUBROUTINE Num_Deri(A,B)
 !===========================Log10 Numerical Derivative============================
   IMPLICIT NONE
   REAL(dp),DIMENSION(:,:),INTENT(IN) :: A
@@ -176,7 +193,7 @@ SUBROUTINE Num_DERI(A,B)
   B(tf,1)=A(tf,1)
   B(tf,2)=B(tf-1,2)
   RETURN
-END SUBROUTINE Num_DERI
+END SUBROUTINE Num_Deri
 !=================================================================================
 SUBROUTINE TH(n,MC,A,dmax)
 !===============Adjacency and neighborhood matrix of the TH=======================
@@ -209,13 +226,13 @@ SUBROUTINE TH(n,MC,A,dmax)
     JJ0=j-((NQ+3)/2)
     jj1=((Real(nq)+2.0)/2.0)-real(j)
     jj1=sign(1.0,jj1)
-    CALL HEVI(JJ0,X1)
+    CALL Heaviside(JJ0,X1)
     xj=(nq+2)*X1+(j)*INT(jj1)-1
 
     sj=inN-j+1
     JO=MOD(xj+1,INSQRT)
     JO2=JO-NINT(((REAL(INSQRT)+3.0)/2.0))
-    CALL HEVI(-JO,H);CALL HEVI(JO2,h2)
+    CALL Heaviside(-JO,H);CALL Heaviside(JO2,h2)
 
     x=(REAL(xj)/REAL(INSQRT))+((REAL(JO)-1.0)*((REAL(INSQRT)-1.0)/REAL(INSQRT)))
 
@@ -250,14 +267,14 @@ SUBROUTINE TH(n,MC,A,dmax)
   RETURN
 END SUBROUTINE TH
 !================================================================================
-SUBROUTINE HEVI(x,y)
+SUBROUTINE Heaviside(x,y)
 !===============================heaviside function===============================
   IMPLICIT NONE
   INTEGER(sp),INTENT(IN) :: x
   INTEGER(sp), INTENT(OUT) :: y
   y=NINT(0.5*(sign(1,x)+1))
   return
-END SUBROUTINE HEVI
+END SUBROUTINE Heaviside
 !================================================================================
 SUBROUTINE TN(n,A,C,dmax)
 !===============Adjacency and neighborhood matrix of the TN=======================
@@ -282,7 +299,7 @@ SUBROUTINE TN(n,A,C,dmax)
   B=0;E=0;d1=1
   DO i=1,n
     DO j=1,n
-      CALL LINE_TN(i,j,n,d)
+      CALL Line_TN(i,j,n,d)
       B(i,j)=d
       IF(d .GT. d1)d1=d
     END DO
@@ -303,7 +320,7 @@ SUBROUTINE TN(n,A,C,dmax)
   RETURN
 END SUBROUTINE TN
 !================================================================================
-SUBROUTINE LINE_TN(a,b,n,D)
+SUBROUTINE Line_TN(a,b,n,D)
 !========Calculation of the first row of the neighborhood matrix=================
   IMPLICIT NONE
   INTEGER(sp), INTENT(IN) :: a,b
@@ -338,13 +355,13 @@ SUBROUTINE LINE_TN(a,b,n,D)
     END IF
     j2=xmin2+i
   END DO
-  CALL distancia_TN(a1,a2,n,D1)
-  CALL distancia_TN(x1,x2,n,D2)
+  CALL Dis_TN(a1,a2,n,D1)
+  CALL Dis_TN(x1,x2,n,D2)
   D=D1+D2
   RETURN
-END SUBROUTINE LINE_TN
+END SUBROUTINE Line_TN
 !================================================================================
-SUBROUTINE distancia_TN(a,b,n,D)
+SUBROUTINE Dis_TN(a,b,n,D)
 !=====================Distance between two nodes in the TN=======================
 IMPLICIT NONE
 INTEGER(sp), INTENT(IN) :: a,b
@@ -366,9 +383,9 @@ END IF
 
 D=fun
 RETURN
-END SUBROUTINE distancia_TN
+END SUBROUTINE Dis_TN
 !================================================================================
-SUBROUTINE data_reading
+SUBROUTINE Data_Reading
 !================================================================================
   IMPLICIT NONE
   input="in_GAM_data.dat"
@@ -379,27 +396,27 @@ SUBROUTINE data_reading
   READ(10,*)result
   CLOSE(10)
   RETURN
-END SUBROUTINE data_reading
+END SUBROUTINE Data_Reading
 !================================================================================
-SUBROUTINE write_data(secs)
+SUBROUTINE Write_Data(secs)
 !================================================================================
   IMPLICIT NONE
   REAL(sp), INTENT(IN) :: secs
   INTEGER(sp) :: i
 
   OPEN(UNIT=10,FILE=result,STATUS='unknown')
-  WRITE(10,*)'#================================================================'
-  WRITE(10,*) "#",secs,input
-  WRITE(10,*)'#================================================================'
+  WRITE(10,*)'#==================================================#'
+  WRITE(10,502) "#",'time= ',secs, '[s]','input= ',input,'#'
+  WRITE(10,*)'#==================================================#'
   WRITE(10,*)
-  WRITE(10,*)
+  WRITE(10,*)"#",'  Log10(t)','       Log10(MSD)', '      Derivative'
   DO i=1,tf
    WRITE(10,501) LOG10(MSDT(i,1)),LOG10(MSDT(i,2)),deri(i,2)
   END DO
   CLOSE(10)
   501 FORMAT(2x,f12.10,4x,f12.10,4x,f12.10)
-
+  502 FORMAT(1x,a,a6,f11.7,a3,2x,a7,a20,1x,a)
   RETURN
-END SUBROUTINE write_data
+END SUBROUTINE Write_Data
 END MODULE module_GAM
 !================================================================================

@@ -11,7 +11,7 @@
 !                 is the classical where the walker has the an equal probability
 !                 of jumping between adjacent nodes and the second one consideres
 !                 a time-dependent probability distribution of long-distance jumps.
-!                 The code can be used either to the normal tori(NT) or for
+!                 This code can be used either to the normal tori(NT) or for
 !                 the helical tori(HT). A theoretical description for this
 !                 formalism and the results can be found in the  manuscript:
 !
@@ -41,13 +41,13 @@ PROGRAM caminantenormal
 
   MSD=0.0;MSD(1)=1.d0
   CALL initialization
-  CALL S_GRADE(PTR,PTI)
+  CALL ST(PTR,PTI)
   PTR=PTI
 
 
   DO t=2,tf
     CALL MELLI(ADJA,MC,dmax,alp,t,TM)
-    CALL S_GRADE(TM,PTI)
+    CALL ST(TM,PTI)
     PTR=MATMUL(PTR,PTI)
     DO i=1,n
       DO j=1,n
