@@ -1,9 +1,3 @@
-!==========================================================================#
-!Modulo creado para hacer las cuentas del articulo
-!Markov_chain_approach_to_anomalous_diffusion_on_Newman–Watts_networks
-!19/02/2020
-!Alfredo Blanco Serrano
-!==========================================================================#
 !================================================================================
 !Name        : module_CAMS
 !Version     : Beta 1.0
@@ -17,19 +11,19 @@
 !                   in the main_CAMS.f90 file. The subroutines contained in this
 !                   module are listed  below:
 !
-! initialization  : This code allows the assignment of values to variables that
+! Initialization  : This code allows the assignment of values to variables that
 !                   do not depend on main loop.
 ! PV              : Calculation of the probability vector considering that the
 !                   HT is a circulating matrix and therefore the number of loops
 !                   is considerably reduced.
-! LINE_TH         : Calculate the distance between the first node and the
+! Line_TH         : Calculate the distance between the first node and the
 !                   remaining N-1 nodes.This calculation is performed with
 !                   the Eq(15) of the manuscript.
 ! Heaviside       : Heaviside step function, or the unit step function.
 ! Num_Deri        : Calculation of the numerical derivative.
-! data_reading    : Subroutine that reads the initial data from the
+! Data_Reading    : Subroutine that reads the initial data from the
 !                   file "in_CAME_data.dat".
-! write_data      : Writing the results obtained.
+! Write_Data      : Writing the results obtained.
 !================================================================================
 MODULE module_CAMS
 !==========================universal variables====================================
@@ -192,11 +186,11 @@ SUBROUTINE Num_Deri(A,B)
   INTEGER(sp) :: i
 
   DO i=1,tf-1
-    yo=LOG10(A(i,2))
-    y1=LOG10(A(i+1,2))
+    yo=dlog10(A(i,2))
+    y1=dlog10(A(i+1,2))
 
-    xo=LOG10(A(i,1))
-    x1=LOG10(A(i+1,1))
+    xo=dlog10(A(i,1))
+    x1=dlog10(A(i+1,1))
 
     d=(y1-yo);c=(x1-xo)
     m=d/c
@@ -211,8 +205,8 @@ SUBROUTINE Data_Reading
   IMPLICIT NONE
   input="in_CAMS_data.dat"
   OPEN(UNIT=10,FILE=input,STATUS='unknown')
-  READ(10,*)N,tf
-  READ(10,*)flag_alpha,NAS
+  READ(10,*)N,NAS,tf
+  READ(10,*)flag_alpha
   READ(10,*)data_alpha
   READ(10,*)result
   CLOSE(10)
@@ -220,22 +214,23 @@ SUBROUTINE Data_Reading
 END SUBROUTINE Data_Reading
 !===================================================================================
 SUBROUTINE Write_Data(secs)
-!===================================================================================
+!================================================================================
   IMPLICIT NONE
   REAL(sp), INTENT(IN) :: secs
   INTEGER(sp) :: i
 
   OPEN(UNIT=10,FILE=result,STATUS='unknown')
-  WRITE(10,*)'#================================================================'
-  WRITE(10,*) "#",secs,input
-  WRITE(10,*)'#================================================================'
+  WRITE(10,*)'#==================================================#'
+  WRITE(10,502) "#",'time= ',secs, '[s]','input= ',input,'#'
+  WRITE(10,*)'#==================================================#'
   WRITE(10,*)
-  WRITE(10,*)
+  WRITE(10,*)"#",'  Log10(t)','       Log10(MSD)', '      Derivative'
   DO i=1,tf
-   WRITE(10,501) LOG10(MSDT(i,1)),LOG10(MSDT(i,2)),deri(i)
+   WRITE(10,501) dlog10(MSDT(i,1)),dlog10(MSDT(i,2)),deri(i)
   END DO
   CLOSE(10)
   501 FORMAT(2x,f12.10,4x,f12.10,4x,f12.10)
+  502 FORMAT(1x,a,a6,f11.7,a3,2x,a7,a20,1x,a)
   RETURN
 END SUBROUTINE Write_Data
 END MODULE module_CAMS
