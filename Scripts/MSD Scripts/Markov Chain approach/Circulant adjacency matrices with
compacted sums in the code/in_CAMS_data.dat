@@ -1,0 +1,41 @@
+1
+49 10000 316
+heli_salida.dat 
+result.dat
+
+
+
+
+
+#=================Declaracion de varaibles de entrada y datos==================#
+# Primera Linea: (N,k,tf)                                                      #
+#==============================================================================#
+# N(Integer(dp) IN)     :Tamaño de la red                                      #
+#                                                                              #
+#tf(Integer(sp) IN)      :Número total de pasos para el caminante              #
+#                                                                              #
+#                                                                              #
+#tff(Integer(sp) IN)     :Número total de datos en el archivo alpha_data       #
+#                                                                              #
+#                                                                              #
+#==============================================================================#
+# Segunda Linea: (alpha_data)                                                  #
+#==============================================================================#
+# alpha_data(CHARACTER(50) IN) :Archivo donde estan los datos de alpha         #
+#                                                                              #
+#==============================================================================#
+#Tercera Linea: (SALIDA)                                                       #
+#==============================================================================#
+# SALIDA(CHARACTER(50) OUT)  :Define el nombre del archivo de salida donde     #
+#                              estaran los datos encontrados para el MSD.      #
+#                                                                              #
+#==============================================================================#
+#Version 2.1                                                                   #
+#                                                                              #
+#Lista de Cambios:                                                             #
+#-Se optimizo el codigo y se simplifico para una mayor eficiencia.             #
+#-Ahora es posible encontrar valores para redes de 10kk en poco tiempo         #
+#-Es posible hacer el codigo aun mas rapido para redes con n impar             #
+#==============================================================================#
+#Alfredo Blanco Serrano 2020                                                   #
+#==============================================================================#
