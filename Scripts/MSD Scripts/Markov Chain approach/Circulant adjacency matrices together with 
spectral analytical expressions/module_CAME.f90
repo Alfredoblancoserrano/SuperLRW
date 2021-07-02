@@ -33,9 +33,6 @@ MODULE module_CAME
 INTEGER,PARAMETER :: sp=4,dp=8
 REAL(dp),PARAMETER::pi=4.d0*DATAN(1.d0)
 
-INTEGER(sp) :: inN,ALLOCATESTATUS,tf,nm,NAS
-REAL(dp)    :: satura,N,xt,flag_alpha
-
 REAL(dp),DIMENSION(:,:),ALLOCATABLE :: MSDT
 REAL(dp),DIMENSION(:),ALLOCATABLE   :: MSD
 REAL(dp),DIMENSION(:),ALLOCATABLE   :: Deri
@@ -46,9 +43,9 @@ REAL(dp),DIMENSION(:),ALLOCATABLE   :: d
 REAL(dp),DIMENSION(:),ALLOCATABLE   :: NV
 REAL(dp),DIMENSION(:),ALLOCATABLE   :: la
 
-
-CHARACTER(30) :: data_alpha
-CHARACTER(50) :: input,result
+REAL(dp)      :: satura,N,xt,flag_alpha
+INTEGER(sp)   :: inN,ALLOCATESTATUS,tf,nm,NAS
+CHARACTER(50) :: input,result,data_alpha
 
 !===================================================================================
 CONTAINS
@@ -145,9 +142,10 @@ END SUBROUTINE Initialization
 SUBROUTINE Eq35(t,xt)
   IMPLICIT NONE
   INTEGER(sp),INTENT(IN) :: t
-  REAL(dp), INTENT(OUT) :: xt
+  REAL(dp), INTENT(OUT)  :: xt
+
+  REAL(dp)    :: s
   INTEGER(sp) :: k,i
-  REAL(dp)::s
 
   xt=0.d0
   d(2:inN)=NV(2:inN)**(-alp(t))
@@ -176,9 +174,10 @@ SUBROUTINE Lambda(l,x)
 !==========================Eigenvalues of the TH====================================
 !=====================See Eq(22) in the supplementary material======================
   IMPLICIT NONE
-  INTEGER(sp),INTENT(IN) :: l
-  REAL(dp),INTENT(OUT) :: x
-  INTEGER(sp) i
+  INTEGER(sp),INTENT(IN)  :: l
+  REAL(dp),   INTENT(OUT) :: x
+
+  INTEGER(sp) :: i
   x=0.d0
 
   DO i=1,nm
@@ -194,7 +193,7 @@ SUBROUTINE Line_TH(NV)
   IMPLICIT NONE
   REAL(dp),DIMENSION(:),INTENT(OUT) :: NV
 
-  REAL(sp) :: x,jj1
+  REAL(sp)    :: x,jj1
   INTEGER(SP) :: JO2,JO,j,h,h2,sj,xj
   INTEGER(SP) :: JJ0,X1,INSQRT
   INSQRT=INT(SQRT(N))
@@ -222,8 +221,8 @@ END SUBROUTINE Line_TH
 SUBROUTINE Heaviside(x,y)
 !===============================heaviside function===============================
   IMPLICIT NONE
-  INTEGER(sp),INTENT(IN) :: x
-  INTEGER(sp), INTENT(OUT) :: y
+  INTEGER(sp),INTENT(IN)  :: x
+  INTEGER(sp),INTENT(OUT) :: y
   y=NINT(0.5*(sign(1,x)+1))
   RETURN
 END SUBROUTINE Heaviside
@@ -231,11 +230,11 @@ END SUBROUTINE Heaviside
 SUBROUTINE Num_Deri(A,B)
 !===========================Log10 Numerical Derivative============================
   IMPLICIT NONE
-  REAL(dp),DIMENSION(:,:),INTENT(IN) :: A
-  REAL(dp),DIMENSION(:),INTENT(OUT) :: B
+  REAL(dp),DIMENSION(:,:),INTENT(IN)  :: A
+  REAL(dp),DIMENSION(:),  INTENT(OUT) :: B
 
-  REAL(dp)    :: yo,y1,xo,x1,m,d,c
   INTEGER(sp) :: i
+  REAL(dp)    :: yo,y1,xo,x1,m,d,c
 
   DO i=1,tf-1
     yo=dlog10(A(i,2))
@@ -269,6 +268,7 @@ SUBROUTINE Write_Data(secs)
 !================================================================================
   IMPLICIT NONE
   REAL(sp), INTENT(IN) :: secs
+  
   INTEGER(sp) :: i
 
   OPEN(UNIT=10,FILE=result,STATUS='unknown')

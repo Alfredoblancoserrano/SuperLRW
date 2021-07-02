@@ -18,7 +18,7 @@
 ! "Efficient approach to time-dependent super-diffusive Lévy random walks
 !            on finite 2D-tori using circulant analogues".
 !================================================================================
-PROGRAM caminantenormal
+PROGRAM GAM
   USE module_GAM
   IMPLICIT NONE
 !============================Variable declaration ===============================
@@ -28,25 +28,25 @@ PROGRAM caminantenormal
   INTEGER(sp) :: start, finish,computime,count_rate, count_max
   INTEGER(sp) :: t,i,j
 !============================data_reading========================================
-  CALL data_reading
+  CALL Data_Reading
 
   ALLOCATE(PTI(N,N), STAT=ALLOCATESTATUS)
   IF(ALLOCATESTATUS .NE. 0)STOP "***NOT ENOUGH MEMORY ***"
   ALLOCATE(MSD(tf), STAT=ALLOCATESTATUS)
   IF(ALLOCATESTATUS .NE. 0)STOP "***NOT ENOUGH MEMORY ***"
 !===================subroutines for computing time===============================
-  CALL system_clock(count_max=count_max, count_rate=count_rate)
-  CALL SYSTEM_CLOCK(start)
+  CALL System_Clock(count_max=count_max, count_rate=count_rate)
+  CALL System_Clock(start)
 !==========================Estimation of MSD=====================================
 
   MSD=0.0;MSD(1)=1.d0
-  CALL initialization
+  CALL Initialization
   CALL ST(PTR,PTI)
   PTR=PTI
 
 
   DO t=2,tf
-    CALL MELLI(ADJA,MC,dmax,alp,t,TM)
+    CALL Melli(ADJA,MC,dmax,alp,t,TM)
     CALL ST(TM,PTI)
     PTR=MATMUL(PTR,PTI)
     DO i=1,n
@@ -57,12 +57,12 @@ PROGRAM caminantenormal
   END DO
   MSDT(2:tf,2)=MSD(2:tf)/REAL(N)
 !==================Estimation of the numerical derivite for the MSD==============
-  CALL Num_DERI(MSDT,deri)
+  CALL Num_Deri(MSDT,deri)
 !===================subroutines for computing time===============================
-  CALL SYSTEM_CLOCK(finish)
+  CALL System_Clock(finish)
   computime=finish-start
   secs=REAL(computime)/real(count_rate)
 !=============================Results============================================
   CALL write_data(secs)
-END PROGRAM caminantenormal
+END PROGRAM GAM
 !===========================================================================

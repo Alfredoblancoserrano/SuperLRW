@@ -29,17 +29,18 @@
 MODULE module_GAM
 !==========================universal variables====================================
 INTEGER,PARAMETER :: sp=4,dp=8
-INTEGER(sp) :: N,Nas,tf,dmax
-REAL(dp) :: flag_alpha
+
+REAL(dp)   ,DIMENSION(:,:),ALLOCATABLE :: TM
+REAL(dp)   ,DIMENSION(:,:),ALLOCATABLE :: S
+REAL(dp)   ,DIMENSION(:,:),ALLOCATABLE :: PTR
+REAL(dp)   ,DIMENSION(:,:),ALLOCATABLE :: MSDT
+REAL(dp)   ,DIMENSION(:)  ,ALLOCATABLE :: Deri
+REAL(dp)   ,DIMENSION(:)  ,ALLOCATABLE :: Alp
 INTEGER(sp),DIMENSION(:,:),ALLOCATABLE :: Adja
-REAL(dp),DIMENSION(:,:),ALLOCATABLE :: TM
-REAL(dp),DIMENSION(:,:),ALLOCATABLE :: S
-REAL(dp),DIMENSION(:,:),ALLOCATABLE :: PTR
-REAL(dp),DIMENSION(:,:),ALLOCATABLE :: MSDT
-REAL(dp),DIMENSION(:),ALLOCATABLE :: Deri
 INTEGER(sp),DIMENSION(:,:),ALLOCATABLE :: MC
-REAL(dp),DIMENSION(:),ALLOCATABLE :: Alp
-INTEGER(sp) :: ALLOCATESTATUS,flag_T
+
+REAL(dp)      :: flag_alpha
+INTEGER(sp)   :: N,Nas,tf,dmax,ALLOCATESTATUS,flag_T
 CHARACTER(30) :: data_alpha,input,result
 
 !================================================================================
@@ -99,12 +100,12 @@ SUBROUTINE Initialization
 SUBROUTINE ST(TM,S)
 !======================= stochastic transition matrix============================
   IMPLICIT NONE
-  REAL(dp), DIMENSION(:,:), INTENT(IN) :: TM
+  REAL(dp), DIMENSION(:,:), INTENT(IN)  :: TM
   REAL(dp), DIMENSION(:,:), INTENT(OUT) :: S
 
-  INTEGER(sp) :: i
-  REAL(dp) :: k
   REAL(dP), DIMENSION(:,:), ALLOCATABLE :: B
+  REAL(dp)    :: k
+  INTEGER(sp) :: i
 
   ALLOCATE(B(n,n), STAT=ALLOCATESTATUS)
   IF(ALLOCATESTATUS .NE. 0 )STOP "*** NOT ENOUGH MEMORY ***"
@@ -132,13 +133,13 @@ SUBROUTINE MELLI(A,MC,dmax,Alpha,t,TM)
   IMPLICIT NONE
   INTEGER(sp), DIMENSION(:,:), INTENT(IN) :: A
   INTEGER(sp), DIMENSION(:,:), INTENT(IN) :: MC
-  REAL(dp), DIMENSION(:), INTENT(IN) :: Alpha
-  INTEGER(sp), INTENT(IN) :: dmax,t
-  REAL(dp), DIMENSION(:,:), INTENT(OUT) :: TM
+  REAL(dp),    DIMENSION(:),   INTENT(IN) :: Alpha
+  INTEGER(sp),                 INTENT(IN) :: dmax,t
+  REAL(dp),    DIMENSION(:,:), INTENT(OUT) :: TM
 
 
   REAL(dp),ALLOCATABLE,DIMENSION(:,:) :: B,DUMMY
-  REAL(dp) :: d
+  REAL(dp)    :: d
   INTEGER(sp) :: Amostra,i,j,k
 
   ALLOCATE(B(n,n), STAT=ALLOCATESTATUS)
@@ -171,8 +172,8 @@ END SUBROUTINE MELLI
 SUBROUTINE Num_Deri(A,B)
 !===========================Log10 Numerical Derivative============================
   IMPLICIT NONE
-  REAL(dp),DIMENSION(:,:),INTENT(IN) :: A
-  REAL(dp),DIMENSION(:),INTENT(OUT) :: B
+  REAL(dp),DIMENSION(:,:),INTENT(IN)  :: A
+  REAL(dp),DIMENSION(:),  INTENT(OUT) :: B
 
   REAL(dp)    :: yo,y1,xo,x1,m,d,c
   INTEGER(sp) :: i
@@ -198,12 +199,12 @@ SUBROUTINE TH(n,MC,A,dmax)
 
   INTEGER(sp), DIMENSION(:,:),INTENT(OUT) :: A
   INTEGER(sp), DIMENSION(:,:),INTENT(OUT) :: MC
-  INTEGER(sp), INTENT(IN) :: n
+  INTEGER(sp), INTENT(IN)  :: n
   INTEGER(sp), INTENT(OUT) :: dmax
 
   INTEGER(sp), DIMENSION(:,:), ALLOCATABLE :: B
   INTEGER(sp), DIMENSION(:,:), ALLOCATABLE :: E
-  INTEGER(sp), DIMENSION(:), ALLOCATABLE :: dist
+  INTEGER(sp), DIMENSION(:),   ALLOCATABLE :: dist
 
   REAL(sp) :: x,jj1
   INTEGER(SP) :: JO2,JO,j,h,h2,sj,xj,i,d1,d2
@@ -267,8 +268,8 @@ END SUBROUTINE TH
 SUBROUTINE Heaviside(x,y)
 !===============================heaviside function===============================
   IMPLICIT NONE
-  INTEGER(sp),INTENT(IN) :: x
-  INTEGER(sp), INTENT(OUT) :: y
+  INTEGER(sp),INTENT(IN)  :: x
+  INTEGER(sp),INTENT(OUT) :: y
   y=NINT(0.5*(sign(1,x)+1))
   return
 END SUBROUTINE Heaviside
@@ -278,7 +279,7 @@ SUBROUTINE TN(n,A,C,dmax)
   IMPLICIT NONE
   INTEGER(sp), DIMENSION(:,:),INTENT(OUT) :: A
   INTEGER(sp), DIMENSION(:,:),INTENT(OUT) :: c
-  INTEGER(sp), INTENT(IN) :: n
+  INTEGER(sp), INTENT(IN)  :: n
   INTEGER(sp), INTENT(OUT) :: dmax
 
   INTEGER(sp), DIMENSION(:,:), ALLOCATABLE :: B

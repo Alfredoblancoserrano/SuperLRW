@@ -21,7 +21,7 @@
 ! "Efficient approach to time-dependent super-diffusive Lévy random walks
 !            on finite 2D-tori using circulant analogues".
 !================================================================================
-PROGRAM HELI_MSD
+PROGRAM CAME
   USE module_CAME
   IMPLICIT NONE
 !============================Variable declaration ===============================
@@ -50,5 +50,5 @@ PROGRAM HELI_MSD
   secs=REAL(computime)/REAL(count_rate)
 !=============================Results============================================
   CALL Write_Data(secs)
-END PROGRAM HELI_MSD
+END PROGRAM CAME
 !==============================================================================#
