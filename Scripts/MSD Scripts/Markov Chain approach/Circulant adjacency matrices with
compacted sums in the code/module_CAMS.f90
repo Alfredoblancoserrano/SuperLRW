@@ -78,19 +78,19 @@ SUBROUTINE Initialization
 !===================================================================================
    CALL LINE_TH(NV)
    SNV=NV*NV
-!========================Reading alpha data=========================================
-  IF(flag_alpha .LT. 0)THEN
-    OPEN(UNIT=10,FILE=data_alpha,STATUS='unknown')
-    READ(10,*)
-    READ(10,*)
-    DO i=1,NAS
-      READ(10,*)alp(i+1)
-    END DO
-    alp(1)=1000
-    CLOSE(10)
-  ELSE
-    alp(1:tf)=flag_alpha
-  END IF
+!========================Reading alpha data=======================================
+   IF(flag_alpha .LT. 0)THEN
+     OPEN(UNIT=10,FILE=data_alpha,STATUS='unknown')
+     DO i=1,6
+       READ(10,*)
+     END DO
+     DO i=1,Nas
+       READ(10,*)alp(i)
+     END DO
+     CLOSE(10)
+   ELSE
+     alp(1:tf)=flag_alpha
+   END IF
 !===================================================================================
 
   cont=1.d0
