@@ -21,7 +21,7 @@
 ! "Efficient approach to time-dependent super-diffusive Lévy random walks
 !            on finite 2D-tori using circulant analogues".
 !================================================================================
-PROGRAM HELI_MSD 
+PROGRAM HELI_MSD
   USE module_CAME
   IMPLICIT NONE
 !============================Variable declaration ===============================
@@ -29,26 +29,26 @@ PROGRAM HELI_MSD
   REAL(sp) :: secs
   INTEGER(sp) :: start, finish,computime,count_rate, count_max
 !============================data_reading========================================
-  CALL data_reading
+  CALL Data_Reading
 !===================subroutines for computing time===============================
-  CALL system_clock(count_max=count_max, count_rate=count_rate)
-  CALL SYSTEM_CLOCK(start)
+  CALL System_Clock(count_max=count_max, count_rate=count_rate)
+  CALL System_Clock(start)
 !==========================Estimation of MSD=====================================
-  CALL initialization
+  CALL Initialization
 
   DO t=2,tf
-    CALL Eq30(t,xt)
+    CALL Eq35(t,xt)
     MSD(t)=satura+xt
   END DO
 
   MSDT(2:tf,2)=MSD(2:tf)
 !==================Estimation of the numerical derivite for the MSD==============
-  CALL Num_DERI(MSDT,Deri)
+  CALL Num_Deri(MSDT,Deri)
 !===================subroutines for computing time===============================
-  CALL SYSTEM_CLOCK(finish)
+  CALL System_Clock(finish)
   computime=finish-start
   secs=REAL(computime)/REAL(count_rate)
 !=============================Results============================================
-  CALL write_data(secs)
+  CALL Write_Data(secs)
 END PROGRAM HELI_MSD
 !==============================================================================#

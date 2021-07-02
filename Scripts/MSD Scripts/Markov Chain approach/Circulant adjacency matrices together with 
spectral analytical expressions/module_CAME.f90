@@ -13,22 +13,22 @@
 !
 ! initialization  : This code allows the assignment of values to variables that
 !                   do not depend on main loop.
-! Eq30            : The MSD value is estimated following the Eq(30) derived
+! Eq35            : The MSD value is estimated following the Eq(35) derived
 !                   in the supplementary material of the manuscript.
 ! Lambda          : Calculation of the eigenvalues of a helical tori following
 !                   the Eq(15) derived in the supplementary material of the
 !                   manuscript.
-! LINE_TH         : Calculate the distance between the first node and the
+! Line_TH         : Calculate the distance between the first node and the
 !                   remaining N-1 nodes.This calculation is performed with
 !                   the Eq(15) of the manuscript.
 ! Heaviside       : Heaviside step function, or the unit step function.
 ! Num_Deri        : Calculation of the numerical derivative.
-! data_reading    : Subroutine that reads the initial data from the
+! Data_Reading    : Subroutine that reads the initial data from the
 !                   file "in_CAME_data.dat".
-! write_data      : Writing the results obtained.
+! Write_Data      : Writing the results obtained.
 !================================================================================
 !===================================================================================
-MODULE module_CAME 
+MODULE module_CAME
 !==========================universal variables====================================
 INTEGER,PARAMETER :: sp=4,dp=8
 REAL(dp),PARAMETER::pi=4.d0*DATAN(1.d0)
@@ -53,7 +53,7 @@ CHARACTER(50) :: input,result
 !===================================================================================
 CONTAINS
 !===================================================================================
-SUBROUTINE initialization
+SUBROUTINE Initialization
   IMPLICIT NONE
   INTEGER(sp)::i,k
   REAL(dp)::x
@@ -94,25 +94,24 @@ SUBROUTINE initialization
     MSDT(i,1)=x
     x=x+1.d0
   END DO
-
-!========================Reading alpha data=======================================
-  IF(flag_alpha .LT. 0)THEN
-    OPEN(UNIT=10,FILE=data_alpha,STATUS='unknown')
-    READ(10,*)
-    READ(10,*)
-    DO i=1,NAS
-      READ(10,*)alp(i+1)
-    END DO
-    alp(1)=1000
-    CLOSE(10)
-  ELSE
-    alp(1:tf)=flag_alpha
-  END IF
+  !========================Reading alpha data=======================================
+    IF(flag_alpha .LT. 0)THEN
+        OPEN(UNIT=10,FILE=data_alpha,STATUS='unknown')
+        DO i=1,6
+          READ(10,*)
+        END DO
+        DO i=1,Nas
+          READ(10,*)alp(i)
+        END DO
+        CLOSE(10)
+    ELSE
+        alp(1:tf)=flag_alpha
+    END IF
 !===================================================================================
 !The vector NV has the distances between node i=1 and the remaining N-1 nodes
 !in the TH.
 !===================================================================================
-  CALL LINE_TH(NV)
+  CALL Line_TH(NV)
   d(2:inN)=NV(2:inN)**(-alP(1))
 !=======Initialization the Eq(30) of the supplementary material=====================
   satura=((N-1)*(7*N-3))/(24*N)
@@ -132,7 +131,7 @@ SUBROUTINE initialization
   DO k=2,inN
     X=0.d0
     DO i=2,inN
-      x=x+NV(i)*NV(i)*cos(theta(K)*REAL(i-1))
+      x=x+NV(i)*NV(i)*dcos(theta(K)*dble(i-1))
     END DO
     X2(k)=x
   END DO
@@ -141,9 +140,9 @@ SUBROUTINE initialization
   DEALLOCATE(lambda_ini, STAT=ALLOCATESTATUS)
   IF(ALLOCATESTATUS .NE. 0 )STOP "*** NOT ENOUGH MEMORY ***"
 RETURN
-END SUBROUTINE initialization
+END SUBROUTINE Initialization
 !============Calculation of the Eq(30) of the supplementary material===============
-SUBROUTINE Eq30(t,xt)
+SUBROUTINE Eq35(t,xt)
   IMPLICIT NONE
   INTEGER(sp),INTENT(IN) :: t
   REAL(dp), INTENT(OUT) :: xt
@@ -157,7 +156,7 @@ SUBROUTINE Eq30(t,xt)
 
   DO k=1,inN-1
     DO i=1,nm
-      la(k)=la(k)+d(i+1)*dCOS((2.d0*pi*REAL(k*i))/N)
+      la(k)=la(k)+d(i+1)*dcos((2.d0*pi*dble(k*i))/N)
     END DO
   END DO
   la=2.d0*la
@@ -171,7 +170,7 @@ SUBROUTINE Eq30(t,xt)
   END DO
   xt=xt/N
 RETURN
-END SUBROUTINE Eq30
+END SUBROUTINE Eq35
 !===================================================================================
 SUBROUTINE Lambda(l,x)
 !==========================Eigenvalues of the TH====================================
@@ -183,13 +182,13 @@ SUBROUTINE Lambda(l,x)
   x=0.d0
 
   DO i=1,nm
-    x=x+d(i+1)*dCOS((2.d0*pi*REAL(l*i))/N)
+    x=x+d(i+1)*dcos((2.d0*pi*dble(l*i))/N)
   END DO
   x=2.D0*x
 RETURN
 END SUBROUTINE Lambda
 !===================================================================================
-SUBROUTINE LINE_TH(NV)
+SUBROUTINE Line_TH(NV)
 !===Estimation of the distance between the first node and the other N-1 nodes.======
 !=====================See Eq(15) in the manuscript==================================
   IMPLICIT NONE
@@ -218,7 +217,7 @@ SUBROUTINE LINE_TH(NV)
     NV(j)=(NINT(x)+2*H-2*h2*JO2)
   END DO
   RETURN
-END SUBROUTINE LINE_TH
+END SUBROUTINE Line_TH
 !================================================================================
 SUBROUTINE Heaviside(x,y)
 !===============================heaviside function===============================
@@ -239,11 +238,11 @@ SUBROUTINE Num_Deri(A,B)
   INTEGER(sp) :: i
 
   DO i=1,tf-1
-    yo=LOG10(A(i,2))
-    y1=LOG10(A(i+1,2))
+    yo=dlog10(A(i,2))
+    y1=dlog10(A(i+1,2))
 
-    xo=LOG10(A(i,1))
-    x1=LOG10(A(i+1,1))
+    xo=dlog10(A(i,1))
+    x1=dlog10(A(i+1,1))
 
     d=(y1-yo);c=(x1-xo)
     m=d/c
@@ -253,7 +252,7 @@ SUBROUTINE Num_Deri(A,B)
   RETURN
 END SUBROUTINE Num_Deri
 !=================================================================================
-SUBROUTINE data_reading
+SUBROUTINE Data_Reading
 !================================================================================
   IMPLICIT NONE
   input="in_CAME_data.dat"
@@ -264,26 +263,26 @@ SUBROUTINE data_reading
   READ(10,*)result
   CLOSE(10)
   RETURN
-END SUBROUTINE data_reading
+END SUBROUTINE Data_Reading
 !================================================================================
-SUBROUTINE write_data(secs)
+SUBROUTINE Write_Data(secs)
 !================================================================================
   IMPLICIT NONE
   REAL(sp), INTENT(IN) :: secs
   INTEGER(sp) :: i
 
   OPEN(UNIT=10,FILE=result,STATUS='unknown')
-  WRITE(10,*)'#================================================================'
-  WRITE(10,*) "#",secs,input
-  WRITE(10,*)'#================================================================'
+  WRITE(10,*)'#==================================================#'
+  WRITE(10,502) "#",'time= ',secs, '[s]','input= ',input,'#'
+  WRITE(10,*)'#==================================================#'
   WRITE(10,*)
-  WRITE(10,*)
+  WRITE(10,*)"#",'  Log10(t)','       Log10(MSD)', '      Derivative'
   DO i=1,tf
-   WRITE(10,501) LOG10(MSDT(i,1)),LOG10(MSDT(i,2)),deri(i)
+   WRITE(10,501) dlog10(MSDT(i,1)),dlog10(MSDT(i,2)),deri(i)
   END DO
   CLOSE(10)
   501 FORMAT(2x,f12.10,4x,f12.10,4x,f12.10)
-
+  502 FORMAT(1x,a,a6,f11.7,a3,2x,a7,a20,1x,a)
   RETURN
-END SUBROUTINE write_data
+END SUBROUTINE Write_Data
 END MODULE module_CAME

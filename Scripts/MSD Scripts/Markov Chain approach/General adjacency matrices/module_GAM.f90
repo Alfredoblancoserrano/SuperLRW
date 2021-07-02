@@ -36,7 +36,7 @@ REAL(dp),DIMENSION(:,:),ALLOCATABLE :: TM
 REAL(dp),DIMENSION(:,:),ALLOCATABLE :: S
 REAL(dp),DIMENSION(:,:),ALLOCATABLE :: PTR
 REAL(dp),DIMENSION(:,:),ALLOCATABLE :: MSDT
-REAL(dp),DIMENSION(:,:),ALLOCATABLE :: Deri
+REAL(dp),DIMENSION(:),ALLOCATABLE :: Deri
 INTEGER(sp),DIMENSION(:,:),ALLOCATABLE :: MC
 REAL(dp),DIMENSION(:),ALLOCATABLE :: Alp
 INTEGER(sp) :: ALLOCATESTATUS,flag_T
@@ -63,7 +63,7 @@ SUBROUTINE Initialization
   IF(ALLOCATESTATUS .NE. 0)STOP "***NOT ENOUGH MEMORY ***"
   ALLOCATE(ALP(tf), STAT=ALLOCATESTATUS)
   IF(ALLOCATESTATUS .NE. 0)STOP "***NOT ENOUGH MEMORY ***"
-  ALLOCATE(deri(tf,2), STAT=ALLOCATESTATUS)
+  ALLOCATE(deri(tf), STAT=ALLOCATESTATUS)
   IF(ALLOCATESTATUS .NE. 0)STOP "***NOT ENOUGH MEMORY ***"
   deri=0.d0;alp=0.d0
 !========================Reading alpha data=======================================
@@ -172,26 +172,23 @@ SUBROUTINE Num_Deri(A,B)
 !===========================Log10 Numerical Derivative============================
   IMPLICIT NONE
   REAL(dp),DIMENSION(:,:),INTENT(IN) :: A
-  REAL(dp),DIMENSION(:,:),INTENT(OUT) :: B
+  REAL(dp),DIMENSION(:),INTENT(OUT) :: B
 
-  REAL(dp) :: yo=0.0,y1=0.0,xo=0.0,x1=0.0,m=0.0
-  REAL(dp) :: d=0.0,c=0.0
+  REAL(dp)    :: yo,y1,xo,x1,m,d,c
   INTEGER(sp) :: i
 
   DO i=1,tf-1
-    yo=LOG10(A(i,2))
-    y1=LOG10(A(i+1,2))
+    yo=dlog10(A(i,2))
+    y1=dlog10(A(i+1,2))
 
-    xo=LOG10(A(i,1))
-    x1=LOG10(A(i+1,1))
+    xo=dlog10(A(i,1))
+    x1=dlog10(A(i+1,1))
 
     d=(y1-yo);c=(x1-xo)
     m=d/c
-    B(i,1)=A(i,1)
-    B(i,2)=m
+    B(i)=m
   END DO
-  B(tf,1)=A(tf,1)
-  B(tf,2)=B(tf-1,2)
+  B(tf)=B(tf-1)
   RETURN
 END SUBROUTINE Num_Deri
 !=================================================================================
@@ -411,7 +408,7 @@ SUBROUTINE Write_Data(secs)
   WRITE(10,*)
   WRITE(10,*)"#",'  Log10(t)','       Log10(MSD)', '      Derivative'
   DO i=1,tf
-   WRITE(10,501) LOG10(MSDT(i,1)),LOG10(MSDT(i,2)),deri(i,2)
+   WRITE(10,501) dlog10(MSDT(i,1)),dlog10(MSDT(i,2)),deri(i)
   END DO
   CLOSE(10)
   501 FORMAT(2x,f12.10,4x,f12.10,4x,f12.10)
