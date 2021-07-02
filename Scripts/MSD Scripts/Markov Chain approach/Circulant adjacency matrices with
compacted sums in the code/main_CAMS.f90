@@ -2,10 +2,9 @@
 !================================================================================
 !Name        : Main_CAMS
 !Version     : Beta 1.0
-!Date        : agosto 03, 2020
 !Authors     : Alfredo Blanco Serrano <alfredoblancoserrano@gmail.com>
-!              Alfonso Allen-Perkins <alfonso.allen.perkins@gmail.com>
-!              Roberto F. S. Andrade <randrade@ufba.br>
+!              Alfonso Allen-Perkins  <alfonso.allen.perkins@gmail.com>
+!              Roberto F. S. Andrade  <randrade@ufba.br>
 !================================================================================
 !About this code: In this code we use a Markov chain formalism that considered
 !                 random walkers in a 2D tori with two different jumping strategies.
@@ -23,7 +22,7 @@
 ! "Efficient approach to time-dependent super-diffusive Lévy random walks
 !            on finite 2D-tori using circulant analogues".
 !================================================================================
-PROGRAM CAMS
+PROGRAM MSD_CAMS
 USE module_CAMS
 IMPLICIT NONE
 !============================Variable declaration ===============================
@@ -35,7 +34,7 @@ IMPLICIT NONE
   CALL System_Clock(count_max=count_max, count_rate=count_rate)
   CALL System_Clock(start)
 !==========================Estimation of MSD=====================================
-  CALL initialization
+  CALL Initialization
 
   DO t=2,tf
     CALL PV(t,P)
@@ -54,4 +53,4 @@ IMPLICIT NONE
 !=============================Results============================================
   CALL Write_Data(secs)
 !================================================================================
-END PROGRAM CAMS
+END PROGRAM MSD_CAMS

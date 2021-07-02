@@ -1,7 +1,6 @@
 !================================================================================
 !Name        : module_GAM
 !Version     : Beta 1.0
-!Date        : agosto 03, 2020
 !Authors     : Alfredo Blanco Serrano <alfredoblancoserrano@gmail.com>
 !              Alfonso Allen-Perkins <alfonso.allen.perkins@gmail.com>
 !              Roberto F. S. Andrade <randrade@ufba.br>
@@ -95,7 +94,7 @@ SUBROUTINE Initialization
   MSDT(1,1)=1.d0;MSDT(1,2)=1.d0
 
   RETURN
-  END SUBROUTINE initialization
+END SUBROUTINE Initialization
 !================================================================================
 SUBROUTINE ST(TM,S)
 !======================= stochastic transition matrix============================
@@ -131,10 +130,10 @@ END SUBROUTINE ST
 SUBROUTINE MELLI(A,MC,dmax,Alpha,t,TM)
 !================Mellin transformed d−path adjacency matrix======================
   IMPLICIT NONE
-  INTEGER(sp), DIMENSION(:,:), INTENT(IN) :: A
-  INTEGER(sp), DIMENSION(:,:), INTENT(IN) :: MC
-  REAL(dp),    DIMENSION(:),   INTENT(IN) :: Alpha
-  INTEGER(sp),                 INTENT(IN) :: dmax,t
+  INTEGER(sp), DIMENSION(:,:), INTENT(IN)  :: A
+  INTEGER(sp), DIMENSION(:,:), INTENT(IN)  :: MC
+  REAL(dp),    DIMENSION(:),   INTENT(IN)  :: Alpha
+  INTEGER(sp),                 INTENT(IN)  :: dmax,t
   REAL(dp),    DIMENSION(:,:), INTENT(OUT) :: TM
 
 

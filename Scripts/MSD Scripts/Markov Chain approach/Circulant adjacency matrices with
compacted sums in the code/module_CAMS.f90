@@ -1,7 +1,6 @@
 !================================================================================
 !Name        : module_CAMS
 !Version     : Beta 1.0
-!Date        : agosto 03, 2020
 !Authors     : Alfredo Blanco Serrano <alfredoblancoserrano@gmail.com>
 !              Alfonso Allen-Perkins  <alfonso.allen.perkins@gmail.com>
 !              Roberto F. S. Andrade  <randrade@ufba.br>

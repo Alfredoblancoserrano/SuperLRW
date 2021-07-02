@@ -1,35 +1,35 @@
-49 25 10000
-1000
-alpha.dat
-result.dat
+625 26 1000 100000
+1 -1
+alpha_result.dat
+MSD_result.dat
 
-
-READ(10,*)N,NAS,tf
-READ(10,*)flag_alpha
+READ(10,*)N,NAS,tf,walkers
+READ(10,*)flag_T,flag_alpha
 READ(10,*)data_alpha
 READ(10,*)result
 
-
 #=========================Description of input variables=========================#
-# First line: (N,NAS,tf)                                                         #
+# First line: (N,NAS,tf,walkers)                                                 #
 #================================================================================#
-# N   (IN)      : Size of the network. N must be an odd number.                   #
-# NAS (IN)      : Number of elemnts of set alpha(t)                               #
-# tf  (IN)      : Time steps required for MSD calculation.                        #
-#                                                                                #
+# N       (IN)      : Size of the network.                                       #
+# NAS     (IN)      : Number of elemnts of set alpha(t)                          #
+# tf      (IN)      : Time steps required for MSD calculation.                   #
+# walkers (IN)      : Number of random walkers considered in the simulation.     #
 #================================================================================#
-# Second line: (flag_alpha)                                                      #
+# Second line: (flag_T,flag_alpha)                                               #
 #================================================================================#
-#flag_alpha (IN)  :If flag_alpha>0 the algorithm takes the parameter alpha       #
+# flag_alpha (IN) :If flag_alpha>0 the algorithm takes the parameter alpha       #
 #                  as a constant and its value is flag_alpha.                    #
 #                  On the other hand,if flag_alpha <0 the alpha data is to       #
 #                  read from a file. Note that the number of alpha data in this  #
-#                  file must correspond with the value of the NAS variable.      #
-#                                                                                #
-!================================================================================#
+#                  file must correspond with the value of the NAS variable and   #
+#                  N must be an odd number.                                      #
+# flag_T     (IN) :If flag_T>0 the simulation is performed on a TH, otherwise    #
+#                  on a TN.                                                      #
+#================================================================================#
 # Third line: (data_alpha)                                                       #
 !================================================================================#
-#data_alpha    (IN) :Name of the file that contains the set of values alpha.     #
+# data_alpha    (IN) :Name of the file that contains the set of values alpha.     #
 !================================================================================#
 # Fourth line: (result)                                                          #
 !================================================================================#

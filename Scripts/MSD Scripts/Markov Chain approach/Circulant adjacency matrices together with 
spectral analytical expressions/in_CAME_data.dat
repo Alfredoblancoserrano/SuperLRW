@@ -7,7 +7,7 @@ MSD_CAME_result.dat
 READ(10,*)N,NAS,tf
 READ(10,*)flag_alpha
 READ(10,*)data_alpha
-READ(10,*)result 
+READ(10,*)result
 
 
 #=========================Description of input variables=========================#
@@ -40,5 +40,4 @@ READ(10,*)result
 #            Alfonso Allen-Perkins  <alfonso.allen.perkins@gmail.com>            #
 #            Roberto F. S. Andrade  <randrade@ufba.br>                           #
 # Version  : Beta 1.0                                                            #
-# Date     : agosto 03, 2020                                                     #
 !================================================================================#

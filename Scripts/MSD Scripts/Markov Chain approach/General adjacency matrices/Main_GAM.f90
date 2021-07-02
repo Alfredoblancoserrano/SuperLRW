@@ -1,10 +1,9 @@
 !================================================================================
 !Name        : Main_GAM
 !Version     : Beta 1.0
-!Date        : agosto 03, 2020
 !Authors     : Alfredo Blanco Serrano <alfredoblancoserrano@gmail.com>
-!              Alfonso Allen-Perkins <alfonso.allen.perkins@gmail.com>
-!              Roberto F. S. Andrade <randrade@ufba.br>
+!              Alfonso Allen-Perkins  <alfonso.allen.perkins@gmail.com>
+!              Roberto F. S. Andrade  <randrade@ufba.br>
 !================================================================================
 !About this code: We use a Markov chain formalism that considered random walkers
 !                 in a 2D tori with two different jumping strategies. The first
@@ -18,7 +17,7 @@
 ! "Efficient approach to time-dependent super-diffusive Lévy random walks
 !            on finite 2D-tori using circulant analogues".
 !================================================================================
-PROGRAM GAM
+PROGRAM MSD_GAM
   USE module_GAM
   IMPLICIT NONE
 !============================Variable declaration ===============================
@@ -63,6 +62,6 @@ PROGRAM GAM
   computime=finish-start
   secs=REAL(computime)/real(count_rate)
 !=============================Results============================================
-  CALL write_data(secs)
-END PROGRAM GAM
+  CALL Write_Data(secs)
+END PROGRAM MSD_GAM
 !===========================================================================

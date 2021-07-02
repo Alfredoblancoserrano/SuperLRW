@@ -1,7 +1,6 @@
 !================================================================================
 !Name        : module_GAM
 !Version     : Beta 1.0
-!Date        : agosto 03, 2020
 !Authors     : Alfredo Blanco Serrano <alfredoblancoserrano@gmail.com>
 !              Alfonso Allen-Perkins <alfonso.allen.perkins@gmail.com>
 !              Roberto F. S. Andrade <randrade@ufba.br>
@@ -268,7 +267,7 @@ SUBROUTINE Write_Data(secs)
 !================================================================================
   IMPLICIT NONE
   REAL(sp), INTENT(IN) :: secs
-  
+
   INTEGER(sp) :: i
 
   OPEN(UNIT=10,FILE=result,STATUS='unknown')
